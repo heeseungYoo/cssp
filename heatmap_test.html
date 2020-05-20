@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cssp</title>
+<link rel="shortcut icon" href="#">
+<link rel='stylesheet' type='text/css' href='reset.css'>
+<link rel='stylesheet' type='text/css' href='test_style.css'>
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <figure class="highcharts-figure">
+    <h3>CSSP2-Single Neural Network</h3>
+	<div class="legend">
+		<table style='border-collapse: separate; border-spacing:1px;'>
+            <tr><td colspan=7>Helix propensity (1 - 0)</td></tr>
+            <tr><td style='height:7px;' colspan=7></td></tr>
+            <tr>
+                <td style='background-color: #990000;'></td>
+                <td style='background-color: #CC0000;'></td>
+                <td style='background-color: #FF0000;'></td>
+                <td style='background-color: #FF6666;'></td>
+                <td style='background-color: #FF9999;'></td>
+                <td style='background-color: #FFCCCC;'></td>
+                <td style='background-color: #FAE7E7;'></td>
+            </tr>
+            <tr><td style='height:5px;' colspan=7></td></tr>
+            <tr><td colspan=7>Beta propensity (1 - 0)</td></tr>
+            <tr><td style='height:5px;' colspan=7></td></tr>
+            <tr>
+                <td style='background-color: #000099;'></td>
+                <td style='background-color: #0000CC;'></td>
+                <td style='background-color: #0000FF;'></td>
+                <td style='background-color: #3333FF;'></td>
+                <td style='background-color: #6666FF;'></td>
+                <td style='background-color: #9999FF;'></td>
+                <td style='background-color: #CCCCFF;'></td>
+            </tr>
+            <tr><td style='height:5px;' colspan=7></td></tr>
+            <tr><td colspan=7>Coil propensity (1 - 0)</td></tr>
+            <tr><td style='height:5px;' colspan=7></td></tr>
+            <tr>
+                <td style='background-color: #009900;'></td>
+                <td style='background-color: #00CC00;'></td>
+                <td style='background-color: #00FF00;'></td>
+                <td style='background-color: #99FF99;'></td>
+                <td style='background-color: #E4FFCC;'></td>
+                <td style='background-color: #FFFFBB;'></td>
+                <td style='background-color: #FFFFCC;'></td>
+            </tr>
+        </table>
+    </div>
+    <div class="info">
+        <table>
+            <tr>
+                <th>Total</th>
+                <th></th>
+                <th>Average (1-0)</th>
+                <th></th>
+                <th>Selected (mouse click & drag)</th>
+            </tr>
+            <tr>
+                <td height='21'><font face='helvetica' size=1 id="paTotal"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="paAverage"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="paSel">P(helix) = 0.00</font></td>
+            </tr>
+            <tr>
+                <td height='21'><font face='helvetica' size=1 id="pbTotal"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="pbAverage"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="pbSel">P(beta) = 0.00</font></td>
+            </tr>
+            <tr>
+                <td height='13'><font face='helvetica' size=1 id="pcTotal"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="pcAverage"></font></td>
+                <td></td>
+                <td><font face='helvetica' size=1 id="pcSel">P(coil) = 0.00</font></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="wrapper">
+        <div id="query_name" value="48380"></div>
+        <script type="text/javascript" src="heatmap_test.js"></script>
+        <script type="text/javascript" src="lineChartSingle.js"></script>
+    </div>
+
+</figure>
+
+</body>
+</html>
