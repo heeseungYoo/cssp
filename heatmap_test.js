@@ -91,15 +91,6 @@ $.get(query_name, function(xml) {
         plotColor[i] = getColor(colorJury, colorHelix, colorBeta, colorCoil);
     });
 
-        // heatmap color 
-    $xml.find('column row').each(function(i, setColor) {
-        var colorJury = $(setColor).find('jury');
-        var colorHelix = $(setColor).find('pa');
-        var colorBeta = $(setColor).find('pb');
-        var colorCoil = $(setColor).find('pc');
-        plotColor[i] = getColor(colorJury, colorHelix, colorBeta, colorCoil);
-    });
-
     var splitxAxis = [[],[],[]];
 
     function getPng(struct, type) {
