@@ -130,6 +130,7 @@ $.get(query_name, function(xml) {
         }   
     }
 
+    // heatmap-xAxis setting
     $xml.find('data table column number').each(function(i, category3) {
         splitxAxis[0].push($(category3).text());
     });
@@ -144,12 +145,8 @@ $.get(query_name, function(xml) {
         splitxAxis[2][i] = getPng(struct, type);
     });
 
-        // heatmap-xAxis setting
-    
 
-    
-
-        // heatmap value
+    // heatmap value
     var pointH = $xml.find('column row pa');
     var pointB = $xml.find('column row pb');
     var pointC = $xml.find('column row pc');
@@ -249,12 +246,6 @@ $.get(query_name, function(xml) {
         document.getElementById('wrapper').appendChild(border_div); 
         $('#yAxis_container' + count).append('<table><tr><td>HIGH</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td>LOW</td></tr></table>');
         $("#heatmap_container" + count).append(dataSet[count]);       
-    }
-
-    function getTooltipColor(color) {
-        if(color == '#FFFFCC' || color == '#FFFFBB' || color == '#FAE7E7' || color == '#E4FFCC') {
-            return '#000000'
-        } else {return '#FFFFFF'}
     }
 
     $('[data-toggle="tooltip"]').each(function(){

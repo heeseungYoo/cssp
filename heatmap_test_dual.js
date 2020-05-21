@@ -63,16 +63,6 @@ $(document).ready(function() {
             }
         }
 
-
-        // heatmap-value, color setting 
-        $xml.find('column row pa').each(function(i, setColor) {
-            pointH.push({value: parseFloat($(setColor).text()), color:getColorH($(setColor).text())});
-        });
-
-        $xml.find('column row pb').each(function(i, setColor) {
-            pointB.push({value: parseFloat($(setColor).text()), color:getColorB($(setColor).text())});
-        });
-
         var splitxAxis = [[], [], []];
 
         function getPng(struct, type) {
@@ -110,6 +100,148 @@ $(document).ready(function() {
                         return "<img src='assets/blank.png'></img>"
                     }      
             }   
+        }
+
+        $xml.find('data table column number').each(function(i, category3) {
+            splitxAxis[0].push($(category3).text());
+        });
+    
+        $xml.find('data table column center').each(function(i, category2) {
+            splitxAxis[1].push($(category2).text());
+        });
+    
+        $xml.find('data table column').each(function(i, category1) {
+            var struct = $(category1).find('struct').text();
+            var type = $(category1).find('strType').text();
+            splitxAxis[2][i] = getPng(struct, type);
+        });
+
+        // heatmap value
+        var pointH = $xml.find('column row pa');
+        var pointB = $xml.find('column row pb');
+
+        var dataSet = new Array;
+        var num = 0;
+        var table = '';
+
+        for(var i = 0; i < dataColumn; i+= 50) {
+            var count = i/50;
+            dataSet[count] = "";
+            dataSet[count] += "<table style='margin-left: 1px;'>";
+        if(dataColumn - i < 50) {
+                for(var l = 0; l < 3; l++) {
+                    dataSet[count] += "<tr>";
+                    for(var j = i; j < dataColumn; j++) {
+                        dataSet[count] += "<td>" +splitxAxis[l][j] + "</td>";
+                    }
+                    dataSet[count] += "</tr>";
+                }
+                dataSet[count] += "</table>";
+                dataSet[count] += "<table class='heatmap' style='border-collapse: separate; border-spacing: 1px;'>";
+                for(var k = 0; k < dataRow; k++) {
+                    dataSet[count] += "<tr>";
+                    for(var j = i; j < dataColumn; j++) {   
+                        num = k + j * 20; 
+                        dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='"+ parseFloat($(pointH[num]).text()) + "\n'"  + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
+                    }
+                    dataSet[count] += "</tr>";
+                }
+            } else {
+                for(var l = 0; l < 3; l++) {
+                    dataSet[count] += "<tr>";
+                    for(var j = i; j < i+50; j++) {
+                        dataSet[count] += "<td>" +splitxAxis[l][j] + "</td>";
+                    }
+                    dataSet[count] += "</tr>";
+                }
+                dataSet[count] += "</table>";
+                dataSet[count] += "<table class='heatmap' style='border-collapse: separate; border-spacing: 1px;'>";
+                for(var k = 0; k < dataRow; k++) {
+                    dataSet[count] += "<tr>";
+                    for(var j = i; j < i + 50; j++) {
+                        num = k + j * 20;
+                        dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='"+ parseFloat($(pointH[num]).text()) + "<br/>" + parseFloat($(pointB[num]).text()) + "<br/>" + parseFloat($(pointC[num]).text()) + "\n'" + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
+                    }
+                    dataSet[count] += "</tr>";
+                }
+            }
+            dataSet[count] += "</table>";
+        }
+
+        var dataLength = dataSet.length;
+
+        for(count = 0; count < dataLength; count++) {
+            var border_div = document.createElement("div");
+            border_div.setAttribute("id", "border" + count);
+            var border_num = (dataSet[count].match(/<td/g) || []).length / 13 * 11 + 130;
+            border_div.style.width = border_num + "px";
+
+            var description_div = document.createElement("div");
+            description_div.setAttribute("id", "description");
+            var p1 = document.createElement("p");
+            p1.style.fontStyle = 'italic';
+            p1.style.fontSize = 11 + 'px';
+            p1.style.display = 'inline';
+            var txt = document.createTextNode("(i,i±4)  ");
+            p1.appendChild(txt);
+            var span1 = document.createElement("span");
+            span1.style.fontSize = 11 + 'px';
+            var txt2 = document.createTextNode("energy");
+            span1.appendChild(txt2);
+            var br1 = document.createElement("br");
+            var br2 = document.createElement("br");
+            description_div.appendChild(br1);
+            description_div.appendChild(br2);
+            description_div.appendChild(p1);
+            description_div.appendChild(span1);
+
+            var p2 = document.createElement("p");
+            p2.style.fontStyle = 'italic';
+            p2.style.fontSize = 11 + 'px';
+            p2.style.display = 'inline';
+            var txt = document.createTextNode(">(i,i±4) ");
+            p2.appendChild(txt);
+            var span2 = document.createElement("span");
+            span2.style.fontSize = 11 + 'px';
+            var txt2 = document.createTextNode("energy");
+            span2.appendChild(txt2);
+            var br2 = document.createElement("br");
+            var br3 = document.createElement("br");
+            var br4 = document.createElement("br");
+            var br5 = document.createElement("br");
+            var br6 = document.createElement("br");
+            description_div.appendChild(br2);
+            description_div.appendChild(br3);
+            description_div.appendChild(br4);
+            description_div.appendChild(br5);
+            description_div.appendChild(br6);
+            description_div.appendChild(p2);
+            description_div.appendChild(span2);
+
+            border_div.appendChild(description_div);
+
+            var yAxis_div = document.createElement("div");
+            yAxis_div.setAttribute("id", "yAxis_container" + count);
+            border_div.appendChild(yAxis_div);
+        
+            var heat_div = document.createElement("div");
+            heat_div.setAttribute("id", "heatmap_container" + count);
+
+            var drag_div = document.createElement("div");
+            drag_div.setAttribute("id", "selection");
+            drag_div.setAttribute("hidden", true);
+            heat_div.appendChild(drag_div);
+        
+            border_div.appendChild(heat_div);
+
+            var line_div = document.createElement("div");
+            line_div.setAttribute("id", "line_container" + count);
+            line_div.style.marginLeft = '40px';
+            border_div.appendChild(line_div);
+
+            document.getElementById('wrapper').appendChild(border_div); 
+            $('#yAxis_container' + count).append('<table><tr><td>High</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td>Low</td></tr><tr></tr><tr></tr><tr></tr><tr><td>High</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td>Low</td></tr></table>');
+            $("#heatmap_container" + count).append(dataSet[count]);       
         }
     });
 });

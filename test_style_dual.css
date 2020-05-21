@@ -64,14 +64,14 @@ div[id^="border"] {
 
 #description {
     display: inline-block;
-    margin-right:10px;
     margin-bottom: 3px;
+    vertical-align: top;
 }
 
 
 div[id^="yAxis_container"] {
     display: inline-block;
-    margin: 0px 0px 7px 30px;
+    margin-top: 52px;
 }
 
 div[id^="yAxis_container"] tr {
@@ -81,12 +81,13 @@ div[id^="yAxis_container"] tr {
 
 div[id^="heatmap_container"] {
     display: inline-block;
-    margin: 5px 5px 5px 5px;
+    margin: 10px 5px 5px 5px;
     padding: 3px 6px 6px 6px;
     border: 1px solid #dddddd;
     -moz-user-select: none;
     -webkit-user-select: none;
     user-select: none;    
+    vertical-align: top;
 }
 
 div[id^="heatmap_container"] td {
