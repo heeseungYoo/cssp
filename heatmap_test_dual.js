@@ -267,7 +267,7 @@ $(document).ready(function() {
         }
 
 
-        $   ('[data-toggle="tooltip"]').each(function(){
+        $('[data-toggle="tooltip"]').each(function(){
             var options = {
                 html: true,
                 template: "<div class='tooltip' role='tooltip' style='background-color:"+ $(this).attr('data-type') +";'><div class='tooltip-arrow'></div><div class='tooltip-inner' data-type='"+$(this).attr('data-type')+"'></div></div>",
