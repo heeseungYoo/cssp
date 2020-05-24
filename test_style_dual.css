@@ -71,12 +71,12 @@ div[id^="border"] {
 
 div[id^="yAxis_container"] {
     display: inline-block;
-    margin-top: 52px;
+    margin-top: 48px;
 }
 
 div[id^="yAxis_container"] tr {
     font-size: 10px;
-    height: 5px;
+    height: 4px;
 }
 
 div[id^="heatmap_container"] {

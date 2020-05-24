@@ -153,7 +153,6 @@ $.get(query_name, function(xml) {
 
     var dataSet = new Array;
     var num = 0;
-    var table = '';
 
     for(var i = 0; i < dataColumn; i+= 50) {
         var count = i/50;

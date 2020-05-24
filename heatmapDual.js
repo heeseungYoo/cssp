@@ -415,20 +415,17 @@ $(document).ready(function() {
                     dataSet[count].dataxAxis2.push(splitxAxis2[j]);
                     dataSet[count].dataxAxis3.push(splitxAxis3[j]);     
                     for(var k = 0; k < dataRow; k++) {
-                        for(var k = 0; k < dataRow; k++) {
-                            if(k < 10) {
-                                dataSet[count].data.push({x: (j-i), y: k, value: pointH[numA].value, color: pointH[numA].color});
-                                numA++;
-                            } 
-                            else if(k >= 10 && k < 13) {
-                                dataSet[count].data.push({x: (j-i), y: k, value: 0, color: "none"});
-                            }
-                            else if(k >= 13 && k < dataRow) {
-                                dataSet[count].data.push({x: (j-i), y: k, value: pointB[numB].value, color: pointB[numB].color});
-                                numB++;
-                            }
+                        if(k < 10) {
+                            dataSet[count].data.push({x: (j-i), y: k, value: pointH[numA].value, color: pointH[numA].color});
+                            numA++;
+                        } 
+                        else if(k >= 10 && k < 13) {
+                            dataSet[count].data.push({x: (j-i), y: k, value: 0, color: "none"});
                         }
-                        
+                        else if(k >= 13 && k < dataRow) {
+                            dataSet[count].data.push({x: (j-i), y: k, value: pointB[numB].value, color: pointB[numB].color});
+                            numB++;
+                        }
                     }
                 }
             }
