@@ -203,7 +203,7 @@ $.get(query_name, function(xml) {
     for(count = 0; count < dataLength; count++) {
         var border_div = document.createElement("div");
         border_div.setAttribute("id", "border" + count);
-        var border_num = (dataSet[count].match(/<td/g) || []).length / 23 * 11 + 90;
+        var border_num = (dataSet[count].match(/<td/g) || []).length / 23 * 11 + 110;
         border_div.style.width = border_num + "px";
 
         var description_div = document.createElement("div");
@@ -239,7 +239,7 @@ $.get(query_name, function(xml) {
 
         var line_div = document.createElement("div");
         line_div.setAttribute("id", "line_container" + count);
-        line_div.style.marginLeft = '0px';
+        line_div.style.marginLeft = '20px';
         border_div.appendChild(line_div);
 
         document.getElementById('wrapper').appendChild(border_div); 
@@ -338,6 +338,7 @@ $.get(query_name, function(xml) {
         }
         
         
+
         function calcSelected() {
             var count = 0;
             pa = 0;
@@ -360,6 +361,14 @@ $.get(query_name, function(xml) {
                 }
             }
 
+            //const parentElement = $('#selection').parentElement;
+            //const parentAbsoluteTop = getAbsoluteTop(parentElement);
+            //const absoluteTop = getAbsoluteTop($('#selection'));
+
+            //const relativeTop = absoluteTop - parentAbsoluteTop;
+
+            //console.log("relativeTop: " + relativeTop);
+
             count = $('.selected').length;
             console.log("Cell count: " + count);         
             //if (dragEnd + 1 < dragStart) { // reverse select
@@ -376,6 +385,10 @@ $.get(query_name, function(xml) {
             //pb /= cellCount;
             //pc /= cellCount;
         }
+
+        //function getAbsoluteTop(element) {
+        //    return window.pageYOffset + element.getBoundingClientRect().top;
+        //}
 
         function mouseMove() {
             if(state == RECT_DRAWING) {
@@ -406,7 +419,12 @@ $.get(query_name, function(xml) {
                 if(table.rows) {
                     columnCount = table.rows[0].cells.length;                    
                 }
+
+                var offset = $(this).offset();
+                event.stopPropagation();
+                console.log(this.tagName + " coords ( " + offset.left + ", " + offset.top + " )");
                 
+
                 drawRect();
             });
 
@@ -441,48 +459,6 @@ $.get(query_name, function(xml) {
                 }
             });
         });  
-
-
-    /*
-        document.getElementById('heatmap_container0').onmousedown = function(e) {
-            
-                pa = 0;
-                pb = 0;
-                pc = 0;
-    
-                div.hidden = 0; //Unhide the div
-                x1 = x2 = e.pageX; //Set the initial X
-                y1 = y2 = e.pageY; //Set the initial Y
-    
-                state = RECT_DRAWING;
-    
-                drawRect();
-            
-        };
-        document.getElementById('heatmap_container0').onmousemove = function(e) {
-            if(state == RECT_DRAWING) {
-                x2 = e.pageX; //Update the current position X
-                y2 = e.pageY; //Update the current position Y
-                drawRect();
-            }
-            
-        };
-        document.getElementById('heatmap_container0').onmouseup = function(e) {
-            if(state == RECT_DRAWING) {
-                this.onmousemove(e)
-                state = RECT_SET;
-            }
-
-            if(x1 == x2 && y1 == y2) {
-                state = NO_RECTANGLE;
-                pa = 0;
-                pb = 0;
-                pc = 0;
-    
-                div.hidden = 1;//Hide the div
-            }
-            
-        };*/
     
 });
 

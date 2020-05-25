@@ -27,8 +27,6 @@ $(document).ready(function() {
         var dataColumn = parseInt($xml.find('colTot').text());  // 147
         var dataRow = ($xml.find('data table column row').length) / dataColumn + 13; // 20
 
-        var plotColor = [];
-
         var colorTable = 
         [{value: 0.95, colorH:'#990000', colorB:'#000099'}, 
         {value: 0.90, colorH:'#CC0000', colorB:'#0000CC'}, 
@@ -121,7 +119,6 @@ $(document).ready(function() {
         var pointB = $xml.find('column row pb');
 
         var dataSet = new Array;
-        var num = 0;
         var numA = 0;
         var numB = 0;
 
@@ -144,7 +141,7 @@ $(document).ready(function() {
                     if(k < 10) {
                         for(var j = i; j < dataColumn; j++) {
                             numA = k + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) = "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     else if(k >= 10 && k < 13) {
@@ -153,7 +150,7 @@ $(document).ready(function() {
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < dataColumn; j++) {
                             numB = (k-13) + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) = "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     dataSet[count] += "</tr>";
@@ -173,7 +170,7 @@ $(document).ready(function() {
                     if(k < 10) {
                         for(var j = i; j < i + 50; j++) {
                             numA = k + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) = "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     else if(k >= 10 && k < 13) {
@@ -182,7 +179,7 @@ $(document).ready(function() {
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < i + 50; j++) {
                             numB = (k-13) + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) = "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     
@@ -197,7 +194,7 @@ $(document).ready(function() {
         for(count = 0; count < dataLength; count++) {
             var border_div = document.createElement("div");
             border_div.setAttribute("id", "border" + count);
-            var border_num = ((dataSet[count].match(/<td/g) || []).length - 3) / 23 * 11 + 120;
+            var border_num = ((dataSet[count].match(/<td/g) || []).length - 3) / 23 * 11 + 130;
             border_div.style.width = border_num + "px";
 
             var description_div = document.createElement("div");
@@ -258,14 +255,13 @@ $(document).ready(function() {
 
             var line_div = document.createElement("div");
             line_div.setAttribute("id", "line_container" + count);
-            line_div.style.marginLeft = '40px';
+            line_div.style.marginLeft = '50px';
             border_div.appendChild(line_div);
 
             document.getElementById('wrapper').appendChild(border_div); 
             $('#yAxis_container' + count).append('<table><tr><td>High</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td>Low</td></tr><tr></tr><tr></tr><tr></tr><tr><td>High</td></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr></tr><tr><td>Low</td></tr></table>');
             $("#heatmap_container" + count).append(dataSet[count]);       
         }
-
 
         $('[data-toggle="tooltip"]').each(function(){
             var options = {
@@ -276,5 +272,7 @@ $(document).ready(function() {
             $(this).tooltip(options);
         
         });
+
+        
     });
 });

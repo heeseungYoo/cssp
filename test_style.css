@@ -62,16 +62,9 @@ div[id^="border"] {
     margin-bottom: 10px;
 }
 
-#description {
-    display: inline-block;
-    margin-right:10px;
-    margin-bottom: 3px;
-}
-
-
 div[id^="yAxis_container"] {
     display: inline-block;
-    margin: 0px 0px 7px 30px;
+    margin: 42px 0px 7px 50px;
 }
 
 div[id^="yAxis_container"] tr {
