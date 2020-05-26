@@ -421,8 +421,9 @@ $.get(query_name, function(xml) {
                 }
 
                 var offset = $(this).offset();
-                event.stopPropagation();
                 console.log(this.tagName + " coords ( " + offset.left + ", " + offset.top + " )");
+                event.stopPropagation();
+                
                 
 
                 drawRect();

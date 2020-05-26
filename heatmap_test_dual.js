@@ -245,11 +245,12 @@ $(document).ready(function() {
         
             var heat_div = document.createElement("div");
             heat_div.setAttribute("id", "heatmap_container" + count);
+            heat_div.setAttribute("draggable", "true");
 
-            var drag_div = document.createElement("div");
-            drag_div.setAttribute("id", "selection");
-            drag_div.setAttribute("hidden", true);
-            heat_div.appendChild(drag_div);
+            //var drag_div = document.createElement("div");
+            //drag_div.setAttribute("id", "selection");
+            //drag_div.setAttribute("hidden", true);
+            //heat_div.appendChild(drag_div);
         
             border_div.appendChild(heat_div);
 
@@ -273,6 +274,26 @@ $(document).ready(function() {
         
         });
 
-        
+        document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
+            item.addEventListener('dragstart', function(ev, dd) {
+                return $('<div class="selection" />')
+                    .css('opacity', .65)
+                    .appendTo(document.body);
+            });
+
+            item.addEventListener('drag', function(ev, dd) {
+                $(dd.proxy).css({
+                    top: Math.min(ev.pageY, dd.startY),
+                    left: Math.min(ev.pageX, dd.startX),
+                    height: Math.abs(ev.pageY - dd.startY),
+                    width: Math.abs(ev.pageX - dd.startX)
+                });
+            });
+
+            item.addEventListener('dragend', function(ev, dd) {
+                $(dd.proxy).remove();
+            });
+
+        });    
     });
 });
