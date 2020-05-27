@@ -257,7 +257,6 @@ $.get(query_name, function(xml) {
         
     });
 
-// color: "+ getTooltipColor($(this).attr('data-type')) + ";
 /*
         var $container = $('div[id^="heatmap_container"]');
         //var $container = $('#heatmap_container0')
@@ -347,7 +346,8 @@ $.get(query_name, function(xml) {
 
             //console.log(event.currentTarget);
             //console.log(event.target);
-            //console.log(event.preventDefault);
+            
+            //---------------Cell select--------------
             var startValue = parseInt(dragStart/columnCount);
             var endValue = parseInt(dragEnd/columnCount);
 
@@ -360,6 +360,7 @@ $.get(query_name, function(xml) {
                     $(".heatmap td").slice(start, end+1).addClass('selected');
                 }
             }
+            //-----------------------------------------
 
             //const parentElement = $('#selection').parentElement;
             //const parentAbsoluteTop = getAbsoluteTop(parentElement);
@@ -398,6 +399,33 @@ $.get(query_name, function(xml) {
             }
         }
 
+        // Helper function to get an element's exact position
+        function getPosition(el) {
+            var xPos = 0;
+            var yPos = 0;
+        
+            while (el) {
+              if (el.tagName == "BODY") {
+                // deal with browser quirks with body/window/document and page scroll
+                var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+                var yScroll = el.scrollTop || document.documentElement.scrollTop;
+   
+                xPos += (el.offsetLeft - xScroll + el.clientLeft);
+                yPos += (el.offsetTop - yScroll + el.clientTop);
+                      } else {
+                // for all other non-BODY elements
+                xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+                yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+                      }
+          
+                el = el.offsetParent;
+            }
+            return {
+              x: xPos,
+              y: yPos
+            };
+        }        
+
         document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
             item.addEventListener('mousedown', event => {
                 //$('.heatmap td').removeClass('selected');
@@ -410,22 +438,22 @@ $.get(query_name, function(xml) {
                 y1 = y2 = event.pageY; //Set the initial Y
     
                 state = RECT_DRAWING;
+                var parentPosition = getPosition(event.currentTarget);
+                var xPosition = event.clientX - parentPosition.x - 7;
+                var yPosition = event.clientY - parentPosition.y - 36;
+                console.log("currentTarget: " + event.currentTarget + " /// " + event.currentTarget.id);
+                console.log("Target: " + event.target + " // x: " + xPosition + " y: " + yPosition);
                 if(event.target.nodeName == 'TD') {
                     var allCells = $('.heatmap td');
                     dragStart = allCells.index(event.target);
                     console.log("dragStart: " + dragStart);
                 }
+
+                // count table column 
                 table = event.target.parentNode.parentNode;
                 if(table.rows) {
                     columnCount = table.rows[0].cells.length;                    
                 }
-
-                var offset = $(this).offset();
-                console.log(this.tagName + " coords ( " + offset.left + ", " + offset.top + " )");
-                event.stopPropagation();
-                
-                
-
                 drawRect();
             });
 
@@ -457,6 +485,7 @@ $.get(query_name, function(xml) {
                     pc = 0;
                     div.hidden = 1;//Hide the div
                     $('.heatmap td').removeClass('selected');
+                    event.stopPropagation();
                 }
             });
         });  

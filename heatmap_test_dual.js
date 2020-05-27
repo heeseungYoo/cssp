@@ -245,7 +245,6 @@ $(document).ready(function() {
         
             var heat_div = document.createElement("div");
             heat_div.setAttribute("id", "heatmap_container" + count);
-            heat_div.setAttribute("draggable", "true");
 
             //var drag_div = document.createElement("div");
             //drag_div.setAttribute("id", "selection");
@@ -274,26 +273,108 @@ $(document).ready(function() {
         
         });
 
+        var pa = 0;
+        var pb = 0;
+        var pc = 0;
+
+        const NO_RECTANGLE = 0;
+        const RECT_DRAWING = 1;
+        const RECT_SET = 2;
+
+        var state = NO_RECTANGLE;
+        var parentPosition;
+        var xPosition = 0, yPosition = 0, xEndPosition = 0, yEndPosition = 0;
+
+        var selection = document.createElement("div");
+        selection.setAttribute("id", "selection");
+
         document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
-            item.addEventListener('dragstart', function(ev, dd) {
-                return $('<div class="selection" />')
-                    .css('opacity', .65)
-                    .appendTo(document.body);
-            });
-
-            item.addEventListener('drag', function(ev, dd) {
-                $(dd.proxy).css({
-                    top: Math.min(ev.pageY, dd.startY),
-                    left: Math.min(ev.pageX, dd.startX),
-                    height: Math.abs(ev.pageY - dd.startY),
-                    width: Math.abs(ev.pageX - dd.startX)
-                });
-            });
-
-            item.addEventListener('dragend', function(ev, dd) {
-                $(dd.proxy).remove();
-            });
-
+            item.addEventListener('mousedown', mouseDownEvent);
+            item.addEventListener('mousemove', mouseMoveEvent);
+            item.addEventListener('mouseup', mouseUpEvent);
         });    
+
+        function mouseDownEvent(event) {
+            pa = 0;
+            pb = 0;
+            pc = 0;
+
+            state = RECT_DRAWING;
+
+            $(selection).prependTo(this);
+
+            parentPosition = getPosition(event.currentTarget);
+            xPosition = xEndPosition = event.clientX - parentPosition.x;
+            yPosition = yEndPosition = event.clientY - parentPosition.y;
+
+            drawRect();
+        }
+
+        function mouseMoveEvent(event) {
+            if(state == RECT_DRAWING) {
+                xEndPosition = event.clientX - parentPosition.x;
+                yEndPosition = event.clientY - parentPosition.y;
+                drawRect();
+            }
+
+        }
+
+        function mouseUpEvent(event) {
+            if(state == RECT_DRAWING) {
+                mouseMoveEvent(event);
+                state = RECT_SET;
+            }
+
+            if(xPosition == xEndPosition && yPosition == yEndPosition) {
+                state = NO_RECTANGLE;
+                pa = 0;
+                pb = 0;
+                pc = 0;
+                $(selection).detach();
+            }
+        }
+
+        function drawRect() {
+            var x1 = Math.min(xPosition, xEndPosition);
+            var x2 = Math.max(xPosition, xEndPosition);
+            var y1 = Math.min(yPosition, yEndPosition);
+            var y2 = Math.max(yPosition, yEndPosition);
+            selection.style.left = x1 + 'px';
+            selection.style.top = y1 + 'px';
+            selection.style.width = x2 - x1 + 'px';
+            selection.style.height = y2 - y1 + 'px';
+
+            calSelected();
+        }
+
+        function calSelected() {
+
+        }
+
+        function getPosition(el) {
+            var xPos = 0;
+            var yPos = 0;
+        
+            while (el) {
+              if (el.tagName == "BODY") {
+                // deal with browser quirks with body/window/document and page scroll
+                var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+                var yScroll = el.scrollTop || document.documentElement.scrollTop;
+   
+                xPos += (el.offsetLeft - xScroll + el.clientLeft);
+                yPos += (el.offsetTop - yScroll + el.clientTop);
+                      } else {
+                // for all other non-BODY elements
+                xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+                yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+                      }
+          
+                el = el.offsetParent;
+            }
+            return {
+              x: xPos,
+              y: yPos
+            };
+        }        
     });
 });
