@@ -337,28 +337,33 @@ $.get(query_name, function(xml) {
     }
 
     function calSelected(x1, x2, y1, y2) {
-        var dragStartX = Math.ceil((x1-7) / 11);
-        var dragStartY = Math.ceil((y1-36) / 5);
-        var dragEndX = Math.ceil((x2-7) / 11);
-        var dragEndY = Math.ceil((y2-36) / 5);
+        pa = 0;
+        pb = 0;
+        pc = 0;
+
+        var dragStartX = (Math.ceil((x1-7) / 11)) > 0 ? Math.ceil((x1-7) / 11) : 1;
+        var dragStartY = (Math.ceil((y1-36) / 5)) > 0 ? Math.ceil((y1-36) / 5) : 1;
+        var dragEndX = (Math.ceil((x2-7) / 11)) > 0 ? Math.ceil((x2-7) / 11) : 1;
+        var dragEndY = (Math.ceil((y2-36) / 5)) > 0 ? Math.ceil((y2-36) / 5) : 1;
 
         console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
 
         for(var i = dragStartY; i <= dragEndY; i++) {
-            var start = (i-1) * columnCount + dragStartX-1;
+            var start = ((i-1) * columnCount + dragStartX -1);
             var end = (i-1) * columnCount + dragEndX;
             console.log("start: " + start + " end: " + end);
-            $(".heatmap td").slice(start, end).addClass('selected');
+            $(event.currentTarget).find(".heatmap td").slice(start, end).addClass('selected');
+            console.log("this: " + $(event.currentTarget).find('.heatmap td').length);
         }
 
-        var count = $(".selected").length;
+        var count = $(event.currentTarget).find(".selected").length;
         console.log("count: " + count);
         var cellString;
-        $('td.selected').each(function(){
+        
+        $(event.currentTarget).find('td.selected').each(function(){
             cellString = $(this).attr('data-original-title');
-            //console.log("string : " + cellString);
             var cell = cellString.match(/[0-9]\.[0-9]{1,}/g);
-            //console.log("cell: " + cell);
+        
             pa += parseFloat(cell[0]);
             pb += parseFloat(cell[1]);
             pc += parseFloat(cell[2]);

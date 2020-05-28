@@ -104,13 +104,14 @@ div[id^="heatmap_container"] .heatmap td{
     position: absolute;
     background: rgba(51, 92, 255, 0.35);
     border: 1px solid rgba(51, 92, 255, 0.4);
-    z-index: 100;
+    z-index: 3;
 }
 
 .tooltip {
     border-radius: 4px;
     padding: 3px 7px 4px 7px;
     box-shadow: 1px 2px 3px grey;
+    z-index: 5;
 }
 
 .tooltip-inner {

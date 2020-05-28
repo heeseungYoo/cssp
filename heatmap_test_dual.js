@@ -145,7 +145,9 @@ $(document).ready(function() {
                         }
                     }
                     else if(k >= 10 && k < 13) {
-                        dataSet[count] += "<td data-toggle='tooltip' data-type='none' title='' style='background-color:none; height: 4px;'></td>";
+                        for(var j = i; j < dataColumn; j++) {
+                            dataSet[count] += "<td data-type='none' title='' style='background-color:none; height: 4px;'></td>";
+                        }
                     }
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < dataColumn; j++) {
@@ -174,7 +176,9 @@ $(document).ready(function() {
                         }
                     }
                     else if(k >= 10 && k < 13) {
-                        dataSet[count] += "<td data-toggle='tooltip' data-type='none' title='' style='background-color:none; height: 4px;'></td>";
+                        for(var j = i; j < i + 50; j++) {
+                        dataSet[count] += "<td data-type='none' title='' style='background-color:none; height: 4px;'></td>";
+                        }
                     }
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < i + 50; j++) {
@@ -270,7 +274,6 @@ $(document).ready(function() {
 
         var pa = 0;
         var pb = 0;
-        var pc = 0;
 
         const NO_RECTANGLE = 0;
         const RECT_DRAWING = 1;
@@ -292,7 +295,6 @@ $(document).ready(function() {
         function mouseDownEvent(event) {
             pa = 0;
             pb = 0;
-            pc = 0;
 
             state = RECT_DRAWING;
 
@@ -302,6 +304,9 @@ $(document).ready(function() {
             xPosition = xEndPosition = event.clientX - parentPosition.x;
             yPosition = yEndPosition = event.clientY - parentPosition.y;
 
+        // get the number of heatmap column
+            var table = event.currentTarget.children[2];
+            columnCount = table.rows[0].cells.length;
             drawRect();
         }
 
@@ -326,6 +331,9 @@ $(document).ready(function() {
                 pb = 0;
                 pc = 0;
                 $(selection).detach();
+                $('.heatmap td').removeClass('selected');
+                $('#paSel').text("P(helix) = " + pa.toFixed(2));
+                $('#pbSel').text("P(beta) = " + pb.toFixed(2));
             }
         }
 
@@ -344,12 +352,51 @@ $(document).ready(function() {
         }
 
         function calSelected(x1, x2, y1, y2) {
-            var dragStartX = Math.ceil((x1-7) / 11);
-            var dragStartY = Math.ceil((y1-36) / 5);
-            var dragEndX = Math.ceil((x2-7) / 11);
-            var dragEndY = Math.ceil((y2-36) / 5);
+            pa = 0;
+            pb = 0;
+                        
+            var dragStartX = (Math.ceil((x1-7) / 11)) > 0 ? Math.ceil((x1-7) / 11) : 1;
+            var dragStartY = (Math.ceil((y1-36) / 5)) > 0 ? Math.ceil((y1-36) / 5) : 1;
+            var dragEndX = (Math.ceil((x2-7) / 11)) > 0 ? Math.ceil((x2-7) / 11) : 1;
+            var dragEndY = (Math.ceil((y2-36) / 5)) > 0 ? Math.ceil((y2-36) / 5) : 1;
 
             console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
+            //(1, 11) - (50, 13)
+            for(var i = dragStartY; i <= dragEndY; i++) {
+                if(i > 13 || i < 11) {
+                    var start = ((i-1) * columnCount + dragStartX -1);
+                    var end = (i-1) * columnCount + dragEndX;
+                    console.log("start: " + start + " end: " + end);
+                    $(event.currentTarget).find(".heatmap td").slice(start, end).addClass('selected');
+                }
+            }
+    
+            var count = $(event.currentTarget).find(".selected").length;
+            console.log("count: " + count);
+            var cellString;
+            
+            $(event.currentTarget).find('td.selected').each(function(){
+                cellString = $(this).attr('data-original-title');
+                if(!cellString) {
+                    pa += 0;
+                    pb += 0;
+                }
+                else if(cellString.includes('helix')) {
+                    var cell = cellString.match(/[0-9]\.[0-9]{1,}/g);
+                    pa += parseFloat(cell);
+                }
+                else if(cellString.includes('beta')) {
+                    var cell = cellString.match(/[0-9]\.[0-9]{1,}/g);
+                    pb += parseFloat(cell);
+                }
+            });
+    
+            pa /= count;
+            pb /= count;
+    
+            $('#paSel').text("P(helix) = " + pa.toFixed(2));
+            $('#pbSel').text("P(beta) = " + pb.toFixed(2));    
+        
         }
 
         function getPosition(el) {
