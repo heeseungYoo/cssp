@@ -4,6 +4,7 @@ $(document).ready(function() {
     $.get(query_name, function(xml) {
         var $xml = $(xml);
 
+        // data-setting
         var paTotal, pbTotal;
 
         paTotal = parseFloat($xml.find('paTot').text()).toFixed(1);
@@ -23,44 +24,7 @@ $(document).ready(function() {
         var strPbAverage = document.getElementById("pbAverage");
         strPbAverage.innerHTML="P(beta) = " + pbAverage;
 
-        // heatmap-color setting 
-        var dataColumn = parseInt($xml.find('colTot').text());  // 147
-        var dataRow = ($xml.find('data table column row').length) / dataColumn + 13; // 20
-
-        var colorTable = 
-        [{value: 0.95, colorH:'#990000', colorB:'#000099'}, 
-        {value: 0.90, colorH:'#CC0000', colorB:'#0000CC'}, 
-        {value: 0.85, colorH:'#FF0000', colorB: '#0000FF'},
-        {value: 0.80, colorH: '#FF6666', colorB: '#3333FF'},
-        {value: 0.75, colorH: '#FF9999', colorB: '#6666FF'},
-        {value: 0.70, colorH: '#FFCCCC', colorB: '#9999FF'},
-        {value: 0.50, colorH: '#FAE7E7', colorB: '#CCCCFF'},
-        {value: 0.30, colorH: '#FFFFCC', colorB: '#FFFFCC'},
-        {value: 0.25, colorH: '#FFFFBB', colorB: '#FFFFBB'},
-        {value: 0.20, colorH: '#E4FFCC', colorB: '#E4FFCC'},
-        {value: 0.15, colorH: '#99FF99', colorB: '#99FF99'},
-        {value: 0.10, colorH: '#00FF00', colorB: '#00FF00'},
-        {value: 0.05, colorH: '#00CC00', colorB: '#00CC00'},
-        {value: 0, colorH: '#009900', colorB: '#009900'}];
-
-        function getColorH(value) {
-            var value2 = parseFloat(value);
-            for(var i in colorTable) {
-                if(value2 >= colorTable[i].value) {
-                    return colorTable[i].colorH;
-                }
-            }
-        }
-    
-        function getColorB(value) {
-            var value2 = parseFloat(value);
-            for(var i in colorTable) {
-                if(value2 >= colorTable[i].value) {
-                    return colorTable[i].colorB;
-                }
-            }
-        }
-
+        // heatmap-xAxis setting
         var splitxAxis = [[], [], []];
 
         function getPng(struct, type) {
@@ -114,6 +78,44 @@ $(document).ready(function() {
             splitxAxis[2][i] = getPng(struct, type);
         });
 
+        // heatmap-color setting 
+        var dataColumn = parseInt($xml.find('colTot').text());  // 147
+        var dataRow = ($xml.find('data table column row').length) / dataColumn + 13; // 20
+
+        var colorTable = 
+        [{value: 0.95, colorH:'#990000', colorB:'#000099'}, 
+        {value: 0.90, colorH:'#CC0000', colorB:'#0000CC'}, 
+        {value: 0.85, colorH:'#FF0000', colorB: '#0000FF'},
+        {value: 0.80, colorH: '#FF6666', colorB: '#3333FF'},
+        {value: 0.75, colorH: '#FF9999', colorB: '#6666FF'},
+        {value: 0.70, colorH: '#FFCCCC', colorB: '#9999FF'},
+        {value: 0.50, colorH: '#FAE7E7', colorB: '#CCCCFF'},
+        {value: 0.30, colorH: '#FFFFCC', colorB: '#FFFFCC'},
+        {value: 0.25, colorH: '#FFFFBB', colorB: '#FFFFBB'},
+        {value: 0.20, colorH: '#E4FFCC', colorB: '#E4FFCC'},
+        {value: 0.15, colorH: '#99FF99', colorB: '#99FF99'},
+        {value: 0.10, colorH: '#00FF00', colorB: '#00FF00'},
+        {value: 0.05, colorH: '#00CC00', colorB: '#00CC00'},
+        {value: 0, colorH: '#009900', colorB: '#009900'}];
+
+        function getColorH(value) {
+            var value2 = parseFloat(value);
+            for(var i in colorTable) {
+                if(value2 >= colorTable[i].value) {
+                    return colorTable[i].colorH;
+                }
+            }
+        }
+    
+        function getColorB(value) {
+            var value2 = parseFloat(value);
+            for(var i in colorTable) {
+                if(value2 >= colorTable[i].value) {
+                    return colorTable[i].colorB;
+                }
+            }
+        }
+
         // heatmap value
         var pointH = $xml.find('column row pa');
         var pointB = $xml.find('column row pb');
@@ -122,6 +124,7 @@ $(document).ready(function() {
         var numA = 0;
         var numB = 0;
 
+        // set heatmap
         for(var i = 0; i < dataColumn; i+= 50) {
             var count = i/50;
             dataSet[count] = "";
@@ -193,6 +196,7 @@ $(document).ready(function() {
             dataSet[count] += "</table>";
         }
 
+        // draw wrapper
         var dataLength = dataSet.length;
 
         for(count = 0; count < dataLength; count++) {
@@ -262,6 +266,7 @@ $(document).ready(function() {
             $("#heatmap_container" + count).append(dataSet[count]);       
         }
 
+        // tooltip
         $('[data-toggle="tooltip"]').each(function(){
             var options = {
                 html: true,
@@ -272,6 +277,7 @@ $(document).ready(function() {
         
         });
 
+        // calculating Selected area
         var pa = 0;
         var pb = 0;
 
@@ -304,7 +310,7 @@ $(document).ready(function() {
             xPosition = xEndPosition = event.clientX - parentPosition.x;
             yPosition = yEndPosition = event.clientY - parentPosition.y;
 
-        // get the number of heatmap column
+            // get the number of heatmap column
             var table = event.currentTarget.children[2];
             columnCount = table.rows[0].cells.length;
             drawRect();
@@ -347,8 +353,10 @@ $(document).ready(function() {
             selection.style.width = x2 - x1 + 'px';
             selection.style.height = y2 - y1 + 'px';
             
-
-            calSelected(x1, x2, y1, y2);
+            if(x1 != x2 && y1 != y2) {
+                calSelected(x1, x2, y1, y2);
+            }
+            
         }
 
         function calSelected(x1, x2, y1, y2) {
@@ -361,7 +369,8 @@ $(document).ready(function() {
             var dragEndY = (Math.ceil((y2-36) / 5)) > 0 ? Math.ceil((y2-36) / 5) : 1;
 
             console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
-            //(1, 11) - (50, 13)
+            
+            $('.heatmap td').removeClass('selected');
             for(var i = dragStartY; i <= dragEndY; i++) {
                 if(i > 13 || i < 11) {
                     var start = ((i-1) * columnCount + dragStartX -1);

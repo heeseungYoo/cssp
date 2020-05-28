@@ -5,6 +5,7 @@ var query_name = $("#query_name").attr("value") + '.xml';
 $.get(query_name, function(xml) {
     var $xml = $(xml);
 
+    // data-setting
     var paTotal, pbTotal, pcTotal;
 
     paTotal = parseFloat($xml.find('paTot').text()).toFixed(1);
@@ -30,6 +31,59 @@ $.get(query_name, function(xml) {
     var strPcAverage = document.getElementById("pcAverage");
     strPcAverage.innerHTML="P(coil) = " + pcAverage;
 
+    // heatmap-xAxis setting
+    var splitxAxis = [[],[],[]];
+
+    function getPng(struct, type) {
+        switch(type) {
+            case 'start':
+                if(struct == 'H' || struct == 'G' || struct =='I') {
+                    return "<img src='assets/startH.png'></img>"
+                } else if (struct == 'E' || struct == 'B') {
+                    return "<img src='assets/start.png'></img>"
+                } else {
+                    return "<img src='assets/blank.png'></img>"
+                }
+            case 'middle':
+                if(struct == 'H' || struct == 'G' || struct =='I') {
+                    return "<img src='assets/middleH.png'></img>"
+                } else if (struct == 'E' || struct == 'B') {
+                    return "<img src='assets/middle.png'></img>"
+                } else {
+                    return "<img src='assets/blank.png'></img>"
+                }
+            case 'end':
+                if(struct == 'H' || struct == 'G' || struct =='I') {
+                    return "<img src='assets/endH.png'></img>"
+                } else if (struct == 'E' || struct == 'B') {
+                    return "<img src='assets/end.png'></img>"
+                } else {
+                    return "<img src='assets/blank.png'></img>"
+                } 
+            case 'single':
+                if(struct == 'H' || struct == 'G' || struct =='I') {
+                    return "<img src='assets/singleH.png'></img>"
+                } else if (struct == 'E' || struct == 'B') {
+                    return "<img src='assets/single.png'></img>"
+                } else {
+                    return "<img src='assets/blank.png'></img>"
+                }      
+        }   
+    }
+
+    $xml.find('data table column number').each(function(i, category3) {
+        splitxAxis[0].push($(category3).text());
+    });
+
+    $xml.find('data table column center').each(function(i, category2) {
+        splitxAxis[1].push($(category2).text());
+    });
+
+    $xml.find('data table column').each(function(i, category1) {
+        var struct = $(category1).find('struct').text();
+        var type = $(category1).find('strType').text();
+        splitxAxis[2][i] = getPng(struct, type);
+    });
 
     // heatmap-color setting 
     var dataColumn = parseInt($xml.find('colTot').text());  // 147
@@ -91,61 +145,6 @@ $.get(query_name, function(xml) {
         plotColor[i] = getColor(colorJury, colorHelix, colorBeta, colorCoil);
     });
 
-    var splitxAxis = [[],[],[]];
-
-    function getPng(struct, type) {
-        switch(type) {
-            case 'start':
-                if(struct == 'H' || struct == 'G' || struct =='I') {
-                    return "<img src='assets/startH.png'></img>"
-                } else if (struct == 'E' || struct == 'B') {
-                    return "<img src='assets/start.png'></img>"
-                } else {
-                    return "<img src='assets/blank.png'></img>"
-                }
-            case 'middle':
-                if(struct == 'H' || struct == 'G' || struct =='I') {
-                    return "<img src='assets/middleH.png'></img>"
-                } else if (struct == 'E' || struct == 'B') {
-                    return "<img src='assets/middle.png'></img>"
-                } else {
-                    return "<img src='assets/blank.png'></img>"
-                }
-            case 'end':
-                if(struct == 'H' || struct == 'G' || struct =='I') {
-                    return "<img src='assets/endH.png'></img>"
-                } else if (struct == 'E' || struct == 'B') {
-                    return "<img src='assets/end.png'></img>"
-                } else {
-                    return "<img src='assets/blank.png'></img>"
-                } 
-            case 'single':
-                if(struct == 'H' || struct == 'G' || struct =='I') {
-                    return "<img src='assets/singleH.png'></img>"
-                } else if (struct == 'E' || struct == 'B') {
-                    return "<img src='assets/single.png'></img>"
-                } else {
-                    return "<img src='assets/blank.png'></img>"
-                }      
-        }   
-    }
-
-    // heatmap-xAxis setting
-    $xml.find('data table column number').each(function(i, category3) {
-        splitxAxis[0].push($(category3).text());
-    });
-
-    $xml.find('data table column center').each(function(i, category2) {
-        splitxAxis[1].push($(category2).text());
-    });
-
-    $xml.find('data table column').each(function(i, category1) {
-        var struct = $(category1).find('struct').text();
-        var type = $(category1).find('strType').text();
-        splitxAxis[2][i] = getPng(struct, type);
-    });
-
-
     // heatmap value
     var pointH = $xml.find('column row pa');
     var pointB = $xml.find('column row pb');
@@ -154,6 +153,7 @@ $.get(query_name, function(xml) {
     var dataSet = new Array;
     var num = 0;
 
+    // set heatmap
     for(var i = 0; i < dataColumn; i+= 50) {
         var count = i/50;
         dataSet[count] = "";
@@ -198,6 +198,7 @@ $.get(query_name, function(xml) {
         dataSet[count] += "</table>";
     }
 
+    // draw wrapper
     var dataLength = dataSet.length;
 
     for(count = 0; count < dataLength; count++) {
@@ -242,6 +243,7 @@ $.get(query_name, function(xml) {
         $("#heatmap_container" + count).append(dataSet[count]);       
     }
 
+    // tooltip
     $('[data-toggle="tooltip"]').each(function(){
         var options = {
             html: true,
@@ -252,6 +254,7 @@ $.get(query_name, function(xml) {
         
     });
 
+    // calculating Selected area
     var pa = 0;
     var pb = 0;
     var pc = 0;
@@ -332,8 +335,10 @@ $.get(query_name, function(xml) {
         selection.style.width = x2 - x1 + 'px';
         selection.style.height = y2 - y1 + 'px';
         
-
-        calSelected(x1, x2, y1, y2);
+        if(x1 != x2 && y1 != y2) {
+            calSelected(x1, x2, y1, y2);
+        }
+        
     }
 
     function calSelected(x1, x2, y1, y2) {
@@ -348,12 +353,12 @@ $.get(query_name, function(xml) {
 
         console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
 
+        $('.heatmap td').removeClass('selected');
         for(var i = dragStartY; i <= dragEndY; i++) {
             var start = ((i-1) * columnCount + dragStartX -1);
             var end = (i-1) * columnCount + dragEndX;
             console.log("start: " + start + " end: " + end);
             $(event.currentTarget).find(".heatmap td").slice(start, end).addClass('selected');
-            console.log("this: " + $(event.currentTarget).find('.heatmap td').length);
         }
 
         var count = $(event.currentTarget).find(".selected").length;
