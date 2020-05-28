@@ -50,7 +50,7 @@ h3 {
 #wrapper {
     min-width: 400px;
     display: inline-block;
-    position: static;
+    position: relative;
     margin-top: 10px;
 }
 
@@ -80,6 +80,7 @@ div[id^="yAxis_container"] tr {
 }
 
 div[id^="heatmap_container"] {
+    position: relative;
     display: inline-block;
     margin: 10px 5px 5px 5px;
     padding: 3px 6px 6px 6px;
@@ -116,7 +117,8 @@ div[id^="heatmap_container"] .heatmap td{
 
 .tooltip {
     border-radius: 4px;
-    padding: 3px 5px 3px 5px;
+    padding: 3px 7px 4px 7px;
+    box-shadow: 1px 2px 3px grey;
 }
 
 .tooltip-inner {

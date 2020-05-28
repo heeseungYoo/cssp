@@ -245,11 +245,6 @@ $(document).ready(function() {
         
             var heat_div = document.createElement("div");
             heat_div.setAttribute("id", "heatmap_container" + count);
-
-            //var drag_div = document.createElement("div");
-            //drag_div.setAttribute("id", "selection");
-            //drag_div.setAttribute("hidden", true);
-            //heat_div.appendChild(drag_div);
         
             border_div.appendChild(heat_div);
 
@@ -343,12 +338,18 @@ $(document).ready(function() {
             selection.style.top = y1 + 'px';
             selection.style.width = x2 - x1 + 'px';
             selection.style.height = y2 - y1 + 'px';
+            
 
-            calSelected();
+            calSelected(x1, x2, y1, y2);
         }
 
-        function calSelected() {
+        function calSelected(x1, x2, y1, y2) {
+            var dragStartX = Math.ceil((x1-7) / 11);
+            var dragStartY = Math.ceil((y1-36) / 5);
+            var dragEndX = Math.ceil((x2-7) / 11);
+            var dragEndY = Math.ceil((y2-36) / 5);
 
+            console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
         }
 
         function getPosition(el) {

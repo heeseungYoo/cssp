@@ -172,7 +172,7 @@ $.get(query_name, function(xml) {
                 dataSet[count] += "<tr>";
                 for(var j = i; j < dataColumn; j++) {   
                     num = k + j * 20; 
-                    dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='"+ parseFloat($(pointH[num]).text()) + "<br/>" + parseFloat($(pointB[num]).text()) + "<br/>" + parseFloat($(pointC[num]).text()) + "\n'"  + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
+                    dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='P(helix) : "+ parseFloat($(pointH[num]).text()) + "<br/>P(beta) : " + parseFloat($(pointB[num]).text()) + "<br/>P(coil) : " + parseFloat($(pointC[num]).text()) + "\n'"  + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
                 }
                 dataSet[count] += "</tr>";
             }
@@ -190,7 +190,7 @@ $.get(query_name, function(xml) {
                 dataSet[count] += "<tr>";
                 for(var j = i; j < i + 50; j++) {
                     num = k + j * 20;
-                    dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='"+ parseFloat($(pointH[num]).text()) + "<br/>" + parseFloat($(pointB[num]).text()) + "<br/>" + parseFloat($(pointC[num]).text()) + "\n'" + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
+                    dataSet[count] += "<td data-toggle='tooltip' data-type='"+ plotColor[num] + "' title='P(helix) : "+ parseFloat($(pointH[num]).text()) + "<br/>P(beta) : " + parseFloat($(pointB[num]).text()) + "<br/>P(coil) : " + parseFloat($(pointC[num]).text()) + "\n'" + " style='background-color:" + plotColor[num] + "; height: 4px;'></td>";
                 }
                 dataSet[count] += "</tr>";
             }
@@ -229,11 +229,6 @@ $.get(query_name, function(xml) {
         
         var heat_div = document.createElement("div");
         heat_div.setAttribute("id", "heatmap_container" + count);
-
-        var drag_div = document.createElement("div");
-        drag_div.setAttribute("id", "selection");
-        drag_div.setAttribute("hidden", true);
-        heat_div.appendChild(drag_div);
         
         border_div.appendChild(heat_div);
 
@@ -257,238 +252,152 @@ $.get(query_name, function(xml) {
         
     });
 
-/*
-        var $container = $('div[id^="heatmap_container"]');
-        //var $container = $('#heatmap_container0')
-        var $selection = $('<div>').addClass('selection-box');
+    var pa = 0;
+    var pb = 0;
+    var pc = 0;
 
-        $container.on('mousedown', function(e) {
-            if(document.getElementsByClassName('selection-box')) {
-                [...document.getElementsByClassName('selection-box')].map(n => n && n.remove());
-            }
-            var click_y = e.pageY,
-            click_x = e.pageX;
-    
-            $selection.css({
-                'top': click_y,
-                'left': click_x,
-                'width': 0,
-                'height': 0,
-                'visibility':'hidden'
-            });
-            $selection.appendTo($container);
-    
-            $container.on('mousemove', function(e) {
-                $('[data-toggle="tooltip"]').tooltip('disable');
-                var move_x = e.pageX, 
-                    move_y = e.pageY,
-                    width = Math.abs(move_x - click_x),
-                    height = Math.abs(move_y - click_y),
-                    new_x, new_y;
-                
-                new_x = (move_x < click_x) ? (click_x - width) : click_x;
-                new_y = (move_y < click_y) ? (click_y - height) : click_y;    
-    
-                $selection.css({
-                    'width': width,
-                    'height': height,
-                    'top': new_y,
-                    'left': new_x,
-                    'visibility':'visible'
-                });
-            }).on('mouseup', function(e) {
-                $('[data-toggle="tooltip"]').tooltip('enable');
-                $container.off('mousemove');
-                
-            });
-        });*/
+    const NO_RECTANGLE = 0;
+    const RECT_DRAWING = 1;
+    const RECT_SET = 2;
 
-        var div = document.getElementById('selection'), x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-        //var $container = $('#heatmap_container0');
-        //var $div = $('<div>').addClass('selection'), x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    var state = NO_RECTANGLE;
+    var parentPosition;
+    var xPosition = 0, yPosition = 0, xEndPosition = 0, yEndPosition = 0;
 
-        var pa = 0;
-        var pb = 0;
-        var pc = 0;
+    var columnCount = 0;
 
-        var table;
-        var columnCount = 0;
+    var selection = document.createElement("div");
+    selection.setAttribute("id", "selection");
 
-        var dragStart = 0;
-        var dragEnd = 0;
+    document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
+        item.addEventListener('mousedown', mouseDownEvent);
+        item.addEventListener('mousemove', mouseMoveEvent);
+        item.addEventListener('mouseup', mouseUpEvent);
+    });    
 
-        const NO_RECTANGLE = 0;
-        const RECT_DRAWING = 1;
-        const RECT_SET = 2;
+    function mouseDownEvent(event) {
+        pa = 0;
+        pb = 0;
+        pc = 0;
 
-        var state = NO_RECTANGLE;
+        state = RECT_DRAWING;
 
-        function drawRect() { //This will restyle the div
-            var x3 = Math.min(x1,x2); //Smaller X
-            var x4 = Math.max(x1,x2); //Larger X
-            var y3 = Math.min(y1,y2); //Smaller Y
-            var y4 = Math.max(y1,y2); //Larger Y
-            div.style.left = x3 + 'px';
-            div.style.top = y3 + 'px';
-            div.style.width = x4 - x3 + 'px';
-            div.style.height = y4 - y3 + 'px';
-            
-            calcSelected();
+        $(selection).prependTo(this);
+
+        parentPosition = getPosition(event.currentTarget);
+        xPosition = xEndPosition = event.clientX - parentPosition.x;
+        yPosition = yEndPosition = event.clientY - parentPosition.y;
+
+        // get the number of heatmap column
+        var table = event.currentTarget.children[2];
+        columnCount = table.rows[0].cells.length;
+        drawRect();
+    }
+
+    function mouseMoveEvent(event) {
+        if(state == RECT_DRAWING) {
+            xEndPosition = event.clientX - parentPosition.x;
+            yEndPosition = event.clientY - parentPosition.y;
+            drawRect();
         }
-        
-        
 
-        function calcSelected() {
-            var count = 0;
+    }
+
+    function mouseUpEvent(event) {
+        if(state == RECT_DRAWING) {
+            mouseMoveEvent(event);
+            state = RECT_SET;
+        }
+
+        if(xPosition == xEndPosition && yPosition == yEndPosition) {
+            state = NO_RECTANGLE;
             pa = 0;
             pb = 0;
             pc = 0;
-
-            //console.log(event.currentTarget);
-            //console.log(event.target);
-            
-            //---------------Cell select--------------
-            var startValue = parseInt(dragStart/columnCount);
-            var endValue = parseInt(dragEnd/columnCount);
-
-            var startRemain = dragStart%columnCount;
-            var endRemain = dragEnd%columnCount;
-            if(endRemain != 0) {
-                for(var i = startValue; i <= endValue; i++) {
-                    var start = i * columnCount + startRemain;
-                    var end = i * columnCount + endRemain;
-                    $(".heatmap td").slice(start, end+1).addClass('selected');
-                }
-            }
-            //-----------------------------------------
-
-            //const parentElement = $('#selection').parentElement;
-            //const parentAbsoluteTop = getAbsoluteTop(parentElement);
-            //const absoluteTop = getAbsoluteTop($('#selection'));
-
-            //const relativeTop = absoluteTop - parentAbsoluteTop;
-
-            //console.log("relativeTop: " + relativeTop);
-
-            count = $('.selected').length;
-            console.log("Cell count: " + count);         
-            //if (dragEnd + 1 < dragStart) { // reverse select
-            //    $(".heatmap td").slice(dragEnd, dragStart + 1).addClass('selected');
-            //} else {
-            //    $(".heatmap td").slice(dragStart, dragEnd + 1).addClass('selected');
-            //}
-            
-            
-            var cellString = $('td.selected').attr('data-original-title');
-            console.log("title: " + cellString);
-            //string slice 후 pa, pb, pc에 할당
-            //pa /= cellCount;
-            //pb /= cellCount;
-            //pc /= cellCount;
+            $(selection).detach();
+            $('.heatmap td').removeClass('selected');
+            $('#paSel').text("P(helix) = " + pa.toFixed(2));
+            $('#pbSel').text("P(beta) = " + pb.toFixed(2));
+            $('#pcSel').text("P(coil) = " + pc.toFixed(2));
         }
+    }
 
-        //function getAbsoluteTop(element) {
-        //    return window.pageYOffset + element.getBoundingClientRect().top;
-        //}
-
-        function mouseMove() {
-            if(state == RECT_DRAWING) {
-                x2 = event.pageX; //Update the current position X
-                y2 = event.pageY; //Update the current position Y
-                drawRect();
-            }
-        }
-
-        // Helper function to get an element's exact position
-        function getPosition(el) {
-            var xPos = 0;
-            var yPos = 0;
+    function drawRect() {
+        var x1 = Math.min(xPosition, xEndPosition);
+        var x2 = Math.max(xPosition, xEndPosition);
+        var y1 = Math.min(yPosition, yEndPosition);
+        var y2 = Math.max(yPosition, yEndPosition);
+        selection.style.left = x1 + 'px';
+        selection.style.top = y1 + 'px';
+        selection.style.width = x2 - x1 + 'px';
+        selection.style.height = y2 - y1 + 'px';
         
-            while (el) {
-              if (el.tagName == "BODY") {
-                // deal with browser quirks with body/window/document and page scroll
-                var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
-                var yScroll = el.scrollTop || document.documentElement.scrollTop;
-   
-                xPos += (el.offsetLeft - xScroll + el.clientLeft);
-                yPos += (el.offsetTop - yScroll + el.clientTop);
-                      } else {
-                // for all other non-BODY elements
-                xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
-                yPos += (el.offsetTop - el.scrollTop + el.clientTop);
-                      }
-          
-                el = el.offsetParent;
-            }
-            return {
-              x: xPos,
-              y: yPos
-            };
-        }        
 
-        document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
-            item.addEventListener('mousedown', event => {
-                //$('.heatmap td').removeClass('selected');
-                pa = 0;
-                pb = 0;
-                pc = 0;
+        calSelected(x1, x2, y1, y2);
+    }
+
+    function calSelected(x1, x2, y1, y2) {
+        var dragStartX = Math.ceil((x1-7) / 11);
+        var dragStartY = Math.ceil((y1-36) / 5);
+        var dragEndX = Math.ceil((x2-7) / 11);
+        var dragEndY = Math.ceil((y2-36) / 5);
+
+        console.log("drag Start: (" + dragStartX + ", " + dragStartY + ") drag End: (" + dragEndX + ", " + dragEndY + ")");
+
+        for(var i = dragStartY; i <= dragEndY; i++) {
+            var start = (i-1) * columnCount + dragStartX-1;
+            var end = (i-1) * columnCount + dragEndX;
+            console.log("start: " + start + " end: " + end);
+            $(".heatmap td").slice(start, end).addClass('selected');
+        }
+
+        var count = $(".selected").length;
+        console.log("count: " + count);
+        var cellString;
+        $('td.selected').each(function(){
+            cellString = $(this).attr('data-original-title');
+            //console.log("string : " + cellString);
+            var cell = cellString.match(/[0-9]\.[0-9]{1,}/g);
+            //console.log("cell: " + cell);
+            pa += parseFloat(cell[0]);
+            pb += parseFloat(cell[1]);
+            pc += parseFloat(cell[2]);
+        });
+
+        pa /= count;
+        pb /= count;
+        pc /= count;
+
+        $('#paSel').text("P(helix) = " + pa.toFixed(2));
+        $('#pbSel').text("P(beta) = " + pb.toFixed(2));
+        $('#pcSel').text("P(coil) = " + pc.toFixed(2));
+    }
+
+    function getPosition(el) {
+        var xPos = 0;
+        var yPos = 0;
     
-                div.hidden = 0; //Unhide the div
-                x1 = x2 = event.pageX; //Set the initial X
-                y1 = y2 = event.pageY; //Set the initial Y
-    
-                state = RECT_DRAWING;
-                var parentPosition = getPosition(event.currentTarget);
-                var xPosition = event.clientX - parentPosition.x - 7;
-                var yPosition = event.clientY - parentPosition.y - 36;
-                console.log("currentTarget: " + event.currentTarget + " /// " + event.currentTarget.id);
-                console.log("Target: " + event.target + " // x: " + xPosition + " y: " + yPosition);
-                if(event.target.nodeName == 'TD') {
-                    var allCells = $('.heatmap td');
-                    dragStart = allCells.index(event.target);
-                    console.log("dragStart: " + dragStart);
-                }
+        while (el) {
+          if (el.tagName == "BODY") {
+            // deal with browser quirks with body/window/document and page scroll
+            var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+            var yScroll = el.scrollTop || document.documentElement.scrollTop;
 
-                // count table column 
-                table = event.target.parentNode.parentNode;
-                if(table.rows) {
-                    columnCount = table.rows[0].cells.length;                    
-                }
-                drawRect();
-            });
-
-            item.addEventListener('mousemove', event => {
-                if(state == RECT_DRAWING) {
-                    x2 = event.pageX; //Update the current position X
-                    y2 = event.pageY; //Update the current position Y
-                    
-                    if(event.target.nodeName == 'TD') {
-                        var allCells = $('.heatmap td');
-                        dragEnd = allCells.index(event.target);
-                        console.log("dragEnd: " + dragEnd);
-                        
-                    }  
-                    drawRect();
-                }
-            });
-
-            item.addEventListener('mouseup', event => {
-                if(state == RECT_DRAWING) {
-                    mouseMove(event);
-                    state = RECT_SET;
-                }
-    
-                if(x1 == x2 && y1 == y2) {
-                    state = NO_RECTANGLE;
-                    pa = 0;
-                    pb = 0;
-                    pc = 0;
-                    div.hidden = 1;//Hide the div
-                    $('.heatmap td').removeClass('selected');
-                    event.stopPropagation();
-                }
-            });
-        });  
+            xPos += (el.offsetLeft - xScroll + el.clientLeft);
+            yPos += (el.offsetTop - yScroll + el.clientTop);
+                  } else {
+            // for all other non-BODY elements
+            xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+            yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+                  }
+      
+            el = el.offsetParent;
+        }
+        return {
+          x: xPos,
+          y: yPos
+        };
+    }        
     
 });
 
