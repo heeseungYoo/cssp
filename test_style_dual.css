@@ -5,20 +5,19 @@
 }
 
 h3 { 
+    margin-top: 40px;
     font-weight: bold;
 }
 
 .legend {
     position: static;
     font-family: Helvetica;
-    font-size: 10px;
+    font-size: 11px;
+    color: #505050;
     display: inline-block;
     border: 1px solid #dddddd;
     border-radius: 5px;
-    padding-top: 2px;
-    padding-bottom: 5px;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 3px 4px 5px 4px;
     margin-right: 10px;
 }
 .legend td {
@@ -27,13 +26,12 @@ h3 {
 .info {
     position: static;
     font-family: Helvetica;
-    font-size: 10px;
+    font-size: 11px;
+    color: #505050;
     display: inline-block;
     border: 1px solid #dddddd;
     border-radius: 5px;
-    padding-top: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 2px 10px 0px 10px;
     margin: 10px 0px 0px 0px;
 }
 

@@ -202,7 +202,7 @@ $(document).ready(function() {
         for(count = 0; count < dataLength; count++) {
             var border_div = document.createElement("div");
             border_div.setAttribute("id", "border" + count);
-            var border_num = ((dataSet[count].match(/<td/g) || []).length - 3) / 23 * 11 + 130;
+            var border_num = ((dataSet[count].match(/<td/g) || []).length) / 26 * 11 + 130;
             border_div.style.width = border_num + "px";
 
             var description_div = document.createElement("div");
