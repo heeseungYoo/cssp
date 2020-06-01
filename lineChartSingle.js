@@ -204,12 +204,13 @@ $(document).ready(function() {
 			line_options.series[2].data = dataSet[count].datapcSum;
 			line_options.chart.width = dataSet[count].dataxAxis.length * 11.3 + 70;
 			var container = "line_container" + count;
-			var func_name = "line_container" + count;
+			//var func_name = "line_container" + count;
 
-			func_name = function () {	
-				var chart = new Highcharts.chart(container, line_options);
-			}
-			func_name()
+			var chart = new Highcharts.chart(container, line_options);
+			//func_name = function () {	
+			//	var chart = new Highcharts.chart(container, line_options);
+			//}
+			//func_name()
 		}	
 	});
 

@@ -292,11 +292,13 @@ $(document).ready(function() {
         var selection = document.createElement("div");
         selection.setAttribute("id", "selection");
 
-        document.querySelectorAll('div[id^="heatmap_container"]').forEach(item => {
+        var containers = document.querySelectorAll('div[id^="heatmap_container"]');
+
+        Array.prototype.slice.call(containers).forEach(function(item){
             item.addEventListener('mousedown', mouseDownEvent);
             item.addEventListener('mousemove', mouseMoveEvent);
             item.addEventListener('mouseup', mouseUpEvent);
-        });    
+        });     
 
         function mouseDownEvent(event) {
             pa = 0;
