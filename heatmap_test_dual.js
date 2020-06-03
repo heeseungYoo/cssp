@@ -144,7 +144,7 @@ $(document).ready(function() {
                     if(k < 10) {
                         for(var j = i; j < dataColumn; j++) {
                             numA = k + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()).toFixed(5) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     else if(k >= 10 && k < 13) {
@@ -155,7 +155,7 @@ $(document).ready(function() {
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < dataColumn; j++) {
                             numB = (k-13) + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()).toFixed(5) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     dataSet[count] += "</tr>";
@@ -175,7 +175,7 @@ $(document).ready(function() {
                     if(k < 10) {
                         for(var j = i; j < i + 50; j++) {
                             numA = k + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorH(parseFloat($(pointH[numA]).text())) + "' title='P(helix) : "+ parseFloat($(pointH[numA]).text()).toFixed(5) + "\n'" + " style='background-color:" + getColorH(parseFloat($(pointH[numA]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     else if(k >= 10 && k < 13) {
@@ -186,7 +186,7 @@ $(document).ready(function() {
                     else if(k >= 13 && k < dataRow) {
                         for(var j = i; j < i + 50; j++) {
                             numB = (k-13) + j * 10;
-                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
+                            dataSet[count] += "<td data-toggle='tooltip' data-type='"+ getColorB(parseFloat($(pointB[numB]).text())) + "' title='P(beta) : "+ parseFloat($(pointB[numB]).text()).toFixed(5) + "\n'" + " style='background-color:" + getColorB(parseFloat($(pointB[numB]).text())) + "; height: 4px;'></td>";
                         }
                     }
                     
